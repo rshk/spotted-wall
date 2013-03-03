@@ -21,8 +21,8 @@ screen = pygame.display.set_mode(size)
 font = pygame.font.SysFont('sans-serif', 160, True)
 fps_font = pygame.font.SysFont('monospace', 20, True)
 
-rendered_text1 = font.render("Hello, world!", True, (255, 0, 0))
-rendered_text2 = font.render("Hello, world!", True, (0, 0, 255))
+rendered_text1 = font._render("Hello, world!", True, (255, 0, 0))
+rendered_text2 = font._render("Hello, world!", True, (0, 0, 255))
 text_rect = rendered_text1.get_rect(center=(width / 2, height / 2))
 
 ST_FADEIN = 0
@@ -75,7 +75,7 @@ while 1:
     screen.blit(surf2, text_rect)
 
     fps = clock.get_fps()
-    fpslabel = fps_font.render(str(int(fps)), True, (255, 255, 255))
+    fpslabel = fps_font._render(str(int(fps)), True, (255, 255, 255))
     rec = fpslabel.get_rect(top=5, right=width - 5)
     screen.blit(fpslabel, rec)
 

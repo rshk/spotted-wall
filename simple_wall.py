@@ -30,7 +30,7 @@ SHOW_FPS = True
 
 
 messages_text = [
-    "This is an example message",
+    "This is an example message.",
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "Mauris blandit pellentesque ornare. Suspendisse potenti.",
     "Maecenas quis libero nec arcu accumsan vestibulum bibendum sit amet nulla.",
@@ -43,35 +43,35 @@ messages_text = [
     "Ut posuere tincidunt mi, id feugiat leo euismod et.",
     "Phasellus vestibulum imperdiet dapibus.",
     "Suspendisse ultrices luctus aliquam.",
-    "In risus nulla, dapibus a ultricies ut, suscipit vitae nunc",
-    "Vivamus accumsan, odio imperdiet tempus euismod, elit orci varius nisi, quis varius metus eros a nibh",
-    "Quisque eu risus non turpis molestie rutrum. Ut pellentesque laoreet mollis.",
-    "Fusce lacinia egestas iaculis. Vestibulum id justo nisi, dictum blandit elit",
-    "Donec dapibus, nulla sagittis egestas eleifend, nulla nisl dictum turpis, sit amet pretium nisl odio suscipit odio",
-    "Quisque fringilla ante id velit tincidunt viverra",
-    "Praesent aliquam lacus id lectus fermentum sit amet accumsan mauris tincidunt",
-    "Aliquam hendrerit feugiat tortor, et egestas dui faucibus euismod",
-    "Curabitur convallis ante a dui viverra dignissim",
-    "Pellentesque tincidunt rutrum vehicula. Nulla varius augue sed augue lacinia vitae vehicula augue aliquet",
-    "Suspendisse ante magna, facilisis in blandit non, pellentesque eget enim",
-    "Phasellus sagittis mauris at urna condimentum eget sodales velit suscipit",
-    "Phasellus pulvinar elit vitae ante pellentesque sollicitudin.",
-    "In ullamcorper felis in sapien imperdiet lobortis",
-    "Ut vestibulum nibh facilisis elit sodales vitae gravida quam rhoncus",
-    "Fusce vel risus et elit fringilla pretium",
-    "Curabitur molestie elit et ligula volutpat bibendum",
-    "Suspendisse nibh metus, fermentum quis fermentum non, tristique ac lacus",
-    "Integer nec risus nec massa pretium rhoncus eget nec mauris. Sed a vestibulum lorem",
-    "Ut sed turpis ut neque scelerisque porttitor. Ut ipsum ante, egestas sit amet laoreet ut, venenatis at massa",
-    "Suspendisse potenti. Nunc mollis leo non tortor bibendum condimentum",
-    "Phasellus tristique magna nec dui facilisis sodales",
-    "Sed convallis, mi vel blandit laoreet, eros neque egestas nulla, sit amet cursus nunc mauris ac dui",
-    "Proin fringilla vehicula faucibus. Aenean gravida risus nec felis malesuada ac aliquam mauris facilisis",
-    "Duis sodales adipiscing libero, non tempor odio pulvinar id",
-    "Nunc mollis iaculis eros, in viverra neque lobortis sit amet",
-    "Nulla sed turpis a metus dictum lacinia",
-    "Mauris lacus diam, feugiat quis facilisis quis, blandit sed leo",
-    "Donec eu fermentum elit",
+    "In risus nulla, dapibus a ultricies ut, suscipit vitae nunc.",
+    "Vivamus accumsan, odio imperdiet tempus euismod, elit orci varius nisi, quis varius metus eros a nibh.",
+    "Quisque eu risus non turpis molestie rutrum. Ut pellentesque laoreet mollis..",
+    "Fusce lacinia egestas iaculis. Vestibulum id justo nisi, dictum blandit elit.",
+    "Donec dapibus, nulla sagittis egestas eleifend, nulla nisl dictum turpis, sit amet pretium nisl odio suscipit odio.",
+    "Quisque fringilla ante id velit tincidunt viverra.",
+    "Praesent aliquam lacus id lectus fermentum sit amet accumsan mauris tincidunt.",
+    "Aliquam hendrerit feugiat tortor, et egestas dui faucibus euismod.",
+    "Curabitur convallis ante a dui viverra dignissim.",
+    "Pellentesque tincidunt rutrum vehicula. Nulla varius augue sed augue lacinia vitae vehicula augue aliquet.",
+    "Suspendisse ante magna, facilisis in blandit non, pellentesque eget enim.",
+    "Phasellus sagittis mauris at urna condimentum eget sodales velit suscipit.",
+    "Phasellus pulvinar elit vitae ante pellentesque sollicitudin..",
+    "In ullamcorper felis in sapien imperdiet lobortis.",
+    "Ut vestibulum nibh facilisis elit sodales vitae gravida quam rhoncus.",
+    "Fusce vel risus et elit fringilla pretium.",
+    "Curabitur molestie elit et ligula volutpat bibendum.",
+    "Suspendisse nibh metus, fermentum quis fermentum non, tristique ac lacus.",
+    "Integer nec risus nec massa pretium rhoncus eget nec mauris. Sed a vestibulum lorem.",
+    "Ut sed turpis ut neque scelerisque porttitor. Ut ipsum ante, egestas sit amet laoreet ut, venenatis at massa.",
+    "Suspendisse potenti. Nunc mollis leo non tortor bibendum condimentum.",
+    "Phasellus tristique magna nec dui facilisis sodales.",
+    "Sed convallis, mi vel blandit laoreet, eros neque egestas nulla, sit amet cursus nunc mauris ac dui.",
+    "Proin fringilla vehicula faucibus. Aenean gravida risus nec felis malesuada ac aliquam mauris facilisis.",
+    "Duis sodales adipiscing libero, non tempor odio pulvinar id.",
+    "Nunc mollis iaculis eros, in viverra neque lobortis sit amet.",
+    "Nulla sed turpis a metus dictum lacinia.",
+    "Mauris lacus diam, feugiat quis facilisis quis, blandit sed leo.",
+    "Donec eu fermentum elit.",
 ]
 
 
@@ -217,7 +217,7 @@ class Message(object):
             if len(current_line) > 0:
                 yield separator.join(current_line)
 
-    def render(self, width, font, color):
+    def _render(self, width, font, color):
         line_spacing = 10
         rendered_lines = []
 
@@ -250,10 +250,32 @@ class Message(object):
 
     @lazy_property
     def rendered(self):
-        return self.render(
+        return self._render(
             width=self._width,
             font=self._font,
             color=self._color)
+
+    def render(self):
+        """
+        Return the rendered surface, with alpha applied.
+        """
+
+        msg_state = self.get_state()
+
+        rendered = self.rendered
+
+        if msg_state == Message.ST_FADEIN:
+            alpha = FADE_IN_EASING(self.get_fadein_percent())
+            rendered.set_alpha(255 * alpha)
+
+        elif msg_state == Message.ST_FADEOUT:
+            alpha = FADE_OUT_EASING(self.get_fadeout_percent())
+            rendered.set_alpha(255 * alpha)
+
+        else:
+            rendered.set_alpha(255)
+
+        return rendered
 
     @property
     def rect(self):
@@ -358,16 +380,24 @@ class Application(object):
             ## Strategy: we want all messages to live at least
             ## MESSAGE_MIN_SHOW_TIME; if the queue is not full, we can
             ## wait MESSAGE_MAX_SHOW_TIME before deleting..
-            draw_height = \
-                sum([m.height for m in self.messages]) + \
-                (MESSAGES_PADDING * (len(self.messages) - 1))
+
+            ## todo: change the expire time depending on queue size..
+
+            def would_fit(height):
+                needed_height = 0
+                for m in self.messages:
+                    if not m.is_expired():
+                        needed_height += m.height + MESSAGES_PADDING
+                        if needed_height > height:
+                            return False
+                return True
 
             ## If the queue is full, try removing the first message
-            if draw_height > self.height:
+            if would_fit(self.height - (2 * SCREEN_PADDING)):
                 try:
                     msg = self.messages[0]
                     if msg.get_show_time() > MESSAGE_MIN_SHOW_TIME:
-                        print ">>> FADING FIRST MESSAGE"
+                        # print ">>> FADING FIRST MESSAGE"
                         msg.fadeOut(FADE_OUT_TIME)
 
                 except IndexError:
@@ -377,7 +407,7 @@ class Application(object):
                 ## Fade out expired messages
                 for message in self.messages:
                     if message.get_show_time() > MESSAGE_MAX_SHOW_TIME:
-                        print ">>> FADING HARD EXPIRED MESSAGE"
+                        # print ">>> FADING HARD EXPIRED MESSAGE"
                         message.fadeOut(FADE_OUT_TIME)
 
             ## Cleanup expired messages
@@ -405,22 +435,7 @@ class Application(object):
                     break  # no more space..
 
                 message.fadeIn(FADE_IN_TIME)
-
-                msg_state = message.get_state()
-
-                if msg_state == Message.ST_FADEIN:
-                    alpha = FADE_IN_EASING(message.get_fadein_percent())
-                    # rendered = apply_alpha(rendered.copy(), alpha)
-                    rendered.set_alpha(255 * alpha)
-
-                elif msg_state == Message.ST_FADEOUT:
-                    alpha = FADE_OUT_EASING(message.get_fadeout_percent())
-                    # rendered = apply_alpha(rendered.copy(), alpha)
-                    rendered.set_alpha(255 * alpha)
-
-                else:
-                    rendered.set_alpha(255)
-
+                rendered = message.render()
                 self.screen.blit(rendered, (SCREEN_PADDING, _filled_space))
 
                 _filled_space += rendered_rc.height
