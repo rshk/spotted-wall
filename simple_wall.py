@@ -427,7 +427,7 @@ class Application(object):
                 except StopIteration:
                     break  # no more messages..
 
-                rendered = message.rendered
+                rendered = message._rendered
 
                 rendered_rc = rendered.get_rect()
                 if _filled_space + rendered_rc.height + SCREEN_PADDING\
