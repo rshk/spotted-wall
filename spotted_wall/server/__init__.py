@@ -73,15 +73,10 @@ class Application(object):
         self.clock = pygame.time.Clock()
 
         self._window_res = initial_size
-        self._fullscreen_res = 0, 0
+        # the max resolution available..
+        self._fullscreen_res = max(pygame.display.list_modes())
 
         self._set_video_mode(fullscreen=fullscreen)
-
-
-        # _screen_flags = pygame.DOUBLEBUF | pygame.RESIZABLE
-        # if fullscreen:
-        #     _screen_flags |= pygame.FULLSCREEN
-        # self.screen = pygame.display.set_mode(initial_size, _screen_flags)
 
         pygame.display.set_caption("Spotted Wall (main window)")
 
@@ -93,6 +88,8 @@ class Application(object):
 
         self.thread_rpc = RPCServerThread()
         self.thread_rpc.parent = self  # Needed to interact
+
+        self._msgs_access_lock = threading.Lock()
 
         self.message_id = Counter()
         self.show_clock = True
@@ -148,23 +145,17 @@ class Application(object):
             elif event.type == pygame.VIDEORESIZE:
                 self._set_video_mode(event.size, self._fullscreen)
 
-    def main_loop(self):
-        while 1:
-            self._check_events()
-
-            ## todo: If the queue is too full, decrease the show time
-
-            ## Cleanup expired messages
+    def _cleanup_messages(self):
+        with self._msgs_access_lock:
             for k in self.messages.keys():  # *NOT* iterkeys() !!
                 if self.messages[k].is_expired():
                     del self.messages[k]
 
-            ## Blank the screen before drawing
-            self.screen.fill((0, 0, 0))
-
+    def _draw_messages(self):
+        with self._msgs_access_lock:
             _filled_space = SCREEN_PADDING
-
             messages_iterator = iter(sorted(self.messages.iteritems()))
+            _shown_messages = 0
 
             while True:  # Loop until we finish space or messages..
 
@@ -173,28 +164,56 @@ class Application(object):
                 except StopIteration:
                     break  # no more messages..
 
-                if _filled_space + message.height + SCREEN_PADDING \
-                        > self.height:
+                message_width = self.width - (2 * SCREEN_PADDING)
+                req_space = \
+                    _filled_space + message.get_height(message_width) \
+                    + SCREEN_PADDING
+
+                ## We make sure we draw at least one message no matter its
+                ## length, to avoid jamming up the queue..
+                if (req_space > self.height) and (_shown_messages > 0):
+                    message.pause()
+                    for message_id, message in messages_iterator:
+                        message.pause()
                     break  # no more space..
-                    ## todo: "pause" the messages? this is needed to handle out-of-screen etc..
 
-                rendered = message.render()
-                self.screen.blit(rendered, (SCREEN_PADDING, _filled_space))
-                _filled_space += message.height + MESSAGES_PADDING
+                message.resume()  # make sure it's not paused..
+                rendered = message.render(message_width)
+                _shown_messages += 1
 
-            if self.show_fps:
-                fps = self.clock.get_fps()
-                fpslabel = self.service_font.render(
-                    str(int(fps)), True, (255, 255, 255))
-                rec = fpslabel.get_rect(top=5, right=self.width - 5)
-                self.screen.blit(fpslabel, rec)
+                if isinstance(rendered, (float, int)):
+                    _filled_space += int(rendered *
+                                         (message.height + MESSAGES_PADDING))
 
-            if self.show_clock:
-                clock_time = time.strftime('%T')
-                clock_label = self.service_font.render(clock_time, True, (255, 255, 255))
-                rec = fpslabel.get_rect(bottom=self.height - 5, centerx=self.width/2)
-                self.screen.blit(clock_label, rec)
+                else:
+                    self.screen.blit(rendered, (SCREEN_PADDING, _filled_space))
+                    _filled_space += rendered.get_height() + MESSAGES_PADDING
 
+    def _draw_fps(self):
+        if self.show_fps:
+            fps = self.clock.get_fps()
+            fpslabel = self.service_font.render(
+                str(int(fps)), True, (255, 255, 255))
+            rec = fpslabel.get_rect(top=5, right=self.width - 5)
+            self.screen.blit(fpslabel, rec)
+
+    def _draw_clock(self):
+        if self.show_clock:
+            clock_time = time.strftime('%T')
+            clock_label = self.service_font.render(
+                clock_time, True, (255, 255, 255))
+            rec = clock_label.get_rect(
+                bottom=self.height - 5, centerx=self.width/2)
+            self.screen.blit(clock_label, rec)
+
+    def main_loop(self):
+        while 1:
+            self._check_events()
+            self._cleanup_messages()
+            self.screen.fill((0, 0, 0))
+            self._draw_messages()
+            self._draw_fps()
+            self._draw_clock()
             pygame.display.flip()
             self.clock.tick(FRAME_RATE)
 
@@ -210,8 +229,11 @@ class Application(object):
         message = Message(
             text,
             font=self.messages_font,
-            width=(self.width - (2 * SCREEN_PADDING)),
+            # width=(self.width - (2 * SCREEN_PADDING)),
             color=color)
+
+        message.max_show_time = int(len(text) * .8)
+
         message_id = self.message_id.next()
         self.messages[message_id] = message
         return message_id
