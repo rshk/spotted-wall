@@ -50,6 +50,8 @@ class Message(object):
         :param show_time: For how long to show the message
         """
 
+        self._color = None
+
         self.text = text
         self.font = font
         self.color = color or colors.next()
@@ -138,6 +140,12 @@ class Message(object):
             font=self.font,
             color=self.color)
 
+    def _flush_caches(self):
+        try:
+            del self._rendered
+        except AttributeError:
+            pass
+
     @property
     def width(self):
         return self._width
@@ -145,11 +153,17 @@ class Message(object):
     @width.setter
     def width(self, value):
         if self._width != value:
-            try:
-                del self._rendered
-            except AttributeError:
-                pass
+            self._flush_caches()
         self._width = value
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._flush_caches()
+        self._color = pygame.color.Color(value)
 
     def get_height(self, width=None):
         self.width = width
@@ -160,10 +174,7 @@ class Message(object):
 
         if width is not None:
             if width != self.width:
-                try:
-                    del self._rendered
-                except AttributeError:
-                    pass
+                self._flush_caches()
                 self.width = width
 
         if self.shown_at is None:
@@ -262,7 +273,7 @@ class Message(object):
             self.max_show_time = self.get_time() + self._fade_out_time
 
     def update(self, values):
-        del self._rendered
+        self._flush_caches()  #todo: only if changed..?
         for key in ['color', 'text', 'font']:
             if key in values:
                 setattr(self, key, values[key])

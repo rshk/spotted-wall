@@ -81,7 +81,8 @@ if __name__ == '__main__':
     c = zerorpc.Client()
     c.connect(address)
 
-    command = args[0]
+    command = args.pop(0)
+
     if command == 'add':
         command_add(c, args)
 
@@ -93,3 +94,6 @@ if __name__ == '__main__':
 
     elif command == 'delete':
         command_delete(c, args)
+
+    else:
+        raise RuntimeError("Unknown command %s" % command)
