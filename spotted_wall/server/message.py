@@ -162,6 +162,7 @@ class Message(object):
 
     @color.setter
     def color(self, value):
+        print "====COLOR===>>>", value
         self._flush_caches()
         if isinstance(value, pygame.color.Color):
             self._color = value

@@ -292,7 +292,7 @@ class Application(object):
         """Add a message to the wall"""
 
         with self._msgs_access_lock:
-            print "Added message: {}".format(text)
+            print "Added message: {} {} {}".format(text, color, duration)
             message = Message(text, font=self.messages_font, color=color)
 
             if duration is not None:

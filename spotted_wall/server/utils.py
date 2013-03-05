@@ -27,7 +27,7 @@ def circular_generator(items):
 
 class Colors(object):
     _colors = [
-        tuple(x * 255 for x in colorsys.hsv_to_rgb(deg / 360.0, .8, 1))
+        tuple(int(x * 255) for x in colorsys.hsv_to_rgb(deg / 360.0, .8, 1))
         for deg in xrange(0, 360, 30)
     ]
     _prev_color = None
