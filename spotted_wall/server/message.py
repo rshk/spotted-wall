@@ -163,7 +163,10 @@ class Message(object):
     @color.setter
     def color(self, value):
         self._flush_caches()
-        self._color = pygame.color.Color(value)
+        if value is not None:
+            self._color = pygame.color.Color(value)
+        else:
+            self._color = None
 
     def get_height(self, width=None):
         self.width = width
