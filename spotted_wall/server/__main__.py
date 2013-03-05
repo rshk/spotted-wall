@@ -24,9 +24,14 @@ parser.add_option('--disable-clock', action='store_false', dest='enable_clock')
 def main():
     options, args = parser.parse_args()
 
+    if options.resolution is not None:
+        resolution = options.resolution.split('x')
+    else:
+        resolution = (1280, 1024)
+
     app = Application(
         fullscreen=options.start_fullscreen,
-        initial_size=options.resolution,
+        initial_size=resolution,
         rpc_server_address=options.rpc_listen_address,
         show_fps=options.enable_fps,
         show_clock=options.enable_clock,
