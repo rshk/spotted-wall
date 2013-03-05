@@ -163,7 +163,11 @@ class Message(object):
     @color.setter
     def color(self, value):
         self._flush_caches()
-        if value is not None:
+        if isinstance(value, pygame.color.Color):
+            self._color = value
+        elif isinstance(value, (list, tuple)):
+            self._color = pygame.color.Color(*value)
+        elif value is not None:
             self._color = pygame.color.Color(value)
         else:
             self._color = None
