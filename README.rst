@@ -1,4 +1,18 @@
 Spotted Wall
 ############
 
-Work in progress, install pygame and run ``simple_wall.py``.
+
+Trying out
+==========
+
+Install::
+
+    python setup.py install
+
+Run server::
+
+    python -m spotted_wall.server
+
+Send a message::
+
+    python -m spotted_wall.client add_message "Hello, world"
