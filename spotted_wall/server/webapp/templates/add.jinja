@@ -1,0 +1,11 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <h1>Add message</h1>
+
+    <form action="/add" method="POST">
+        <textarea name="message" placeholder="Your message here..." class="span12"></textarea><br>
+        <input type="color" name="color" placeholder="Choose color"><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

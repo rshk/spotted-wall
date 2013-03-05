@@ -12,8 +12,8 @@ setup(
     install_requires=[
         'pygame',
         'zerorpc',
-        #'pyzmq==2.2.0.1',
         'pyzmq<13',  # Version 13 is known not to work
+        'flask',
     ],
     package_data={'': ['README.rst']},
 )

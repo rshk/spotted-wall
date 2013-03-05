@@ -133,3 +133,16 @@ def wrap_pygame_text(font, words, width, separator=' '):
         ## If we have stuff in the buffer, flush it
         if len(current_line) > 0:
             yield separator.join(current_line)
+
+
+def pygame_color_to_hex(c):
+    """
+    Converts a Pygame Color to its string representation,
+    for use in CSS.
+    """
+    return '#%02x%02x%02x%02x' % (c.r, c.g, c.b, c.a)
+
+
+def pygame_color_from_hex(color):
+    import pygame
+    return pygame.color.Color(color)

@@ -1,0 +1,1 @@
+recursive-include spotted_wall/server/webapp/static *.css *.js

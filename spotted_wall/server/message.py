@@ -7,7 +7,7 @@ import time
 
 import pygame
 
-from .utils import Colors, lazy_property, SeekableIterator, wrap_pygame_text
+from .utils import Colors, lazy_property, wrap_pygame_text, pygame_color_to_hex
 
 
 MESSAGE_MIN_SHOW_TIME = 10
@@ -255,3 +255,35 @@ class Message(object):
             delta = time.time() - self._paused_time
             self.shown_at += delta
         self._paused_time = None
+
+    def fadeOut(self):
+        """Start the fadeOut right now.."""
+        if self.get_state() < self.ST_FADEOUT:
+            self.max_show_time = self.get_time() + self._fade_out_time
+
+    def update(self, values):
+        del self._rendered
+        for key in ['color', 'text', 'font']:
+            if key in values:
+                setattr(self, key, values[key])
+        if 'max_show_time' in values:
+            self._max_show_time = values['max_show_time']
+
+    def to_dict(self, withmeta=True):
+        data = {
+            'text': self.text,
+            'color': pygame_color_to_hex(self.color),
+        }
+        if withmeta:
+            data.update({
+            '_shown_at': self.shown_at,
+            '_max_show_time': self.max_show_time,
+            '_shown_time': self.get_shown_time(),
+            })
+        return data
+
+    @classmethod
+    def from_dict(cls, data):
+        newcls = cls(data['text'])
+        newcls.update(data)
+        return newcls
