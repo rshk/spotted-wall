@@ -25,6 +25,7 @@ FONT_SIZE = 40
 FRAME_RATE = 60
 # SHOW_FPS = True
 DEBUG = True
+__version__ = '0.1'
 ## =============================================================================
 
 
@@ -61,6 +62,14 @@ class RPCServerThread(threading.Thread):
 
             def update_message(self, message_id, values):
                 return app.update_message(message_id, values)
+
+            def get_message(self, message_id):
+                return app.get_message(message_id)
+
+            def server_info(self):
+                return {
+                    'version': __version__,
+                }
 
         self.socket = zerorpc.Server(RPCObject())
         self.socket.bind(self.address)
@@ -312,6 +321,13 @@ class Application(object):
                 msg = message.to_dict()
                 msg['id'] = message_id
                 yield msg
+
+    def get_message(self, message_id):
+        with self._msgs_access_lock:
+            message = self.messages[message_id]
+            msg = message.to_dict()
+        msg['id'] = message_id
+        return msg
 
     def delete_message(self, message_id, immediate=False):
         """Delete all the messages"""
