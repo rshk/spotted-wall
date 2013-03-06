@@ -278,7 +278,7 @@ class Message(object):
     def fadeOut(self):
         """Start the fadeOut right now.."""
         if self.get_state() < self.ST_FADEOUT:
-            self.max_show_time = self.get_time() + self._fade_out_time
+            self.max_show_time = self.get_shown_time() + self._fade_out_time
 
     def update(self, values):
         self._flush_caches()  #todo: only if changed..?

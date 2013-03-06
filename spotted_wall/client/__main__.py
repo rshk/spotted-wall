@@ -67,11 +67,11 @@ def command_update(connection, args):
         if value is not None:
             updates[key] = value
 
-    connection.update_message(args[0], updates)
+    connection.update_message(int(args[0]), updates)
 
 
 def command_delete(connection, args):
-    connection.delete_message(args[0])
+    connection.delete_message(int(args[0]))
 
 
 if __name__ == '__main__':
