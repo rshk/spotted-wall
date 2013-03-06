@@ -121,7 +121,7 @@ class Message(object):
         req_height = sum(t.get_height() for t in rendered_lines)
         req_height += line_spacing * (len(rendered_lines) - 1)
 
-        new_surf = pygame.surface.Surface((width, req_height))
+        new_surf = pygame.surface.Surface((max(0, width), max(0, req_height)))
         cur_ypos = 0
 
         for line in rendered_lines:
