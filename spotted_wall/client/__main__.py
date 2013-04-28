@@ -6,7 +6,7 @@ SpottedWall client
 
 import optparse
 
-import zerorpc
+import smartrpyc.client
 
 parser = optparse.OptionParser()
 parser.disable_interspersed_args()
@@ -78,8 +78,7 @@ if __name__ == '__main__':
     options, args = parser.parse_args()
     address = options.address or 'tcp://127.0.0.1:4242'
 
-    c = zerorpc.Client()
-    c.connect(address)
+    c = smartrpyc.client.Client(address)
 
     command = args.pop(0)
 

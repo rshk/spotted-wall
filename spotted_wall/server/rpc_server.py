@@ -29,25 +29,29 @@ class SpottedRpcMethods(MethodsObject):
     def __init__(self, app):
         self.app = app
 
-    def add_message(self, *args, **kwargs):
-        return self.app.add_message(*args, **kwargs)
+    @property
+    def screen(self):
+        return self.app.screen
 
-    def list_messages(self):
-        return list(self.app.list_messages())
+    def add_message(self, request, *args, **kwargs):
+        return self.screen.add_message(*args, **kwargs)
 
-    def delete_message(self, message_id):
-        return self.app.delete_message(message_id)
+    def list_messages(self, request):
+        return list(self.screen.list_messages())
 
-    def hide_message(self, message_id):
-        return self.app.hide_message(message_id)
+    def delete_message(self, request, message_id):
+        return self.screen.delete_message(message_id)
 
-    def update_message(self, message_id, values):
-        return self.app.update_message(message_id, values)
+    def hide_message(self, request, message_id):
+        return self.screen.hide_message(message_id)
 
-    def get_message(self, message_id):
-        return self.app.get_message(message_id)
+    def update_message(self, request, message_id, values):
+        return self.screen.update_message(message_id, values)
 
-    def server_info(self):
+    def get_message(self, request, message_id):
+        return self.screen.get_message(message_id)
+
+    def server_info(self, request):
         return {
             'version': __import__('spotted_wall').__version__,
         }

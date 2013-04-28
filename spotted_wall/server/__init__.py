@@ -41,6 +41,7 @@ class Application(object):
         self.thread_rpc.start()
 
         ## Commands listening loop
+        ## todo: we'd need something better for this..
         self.running = True
         while self.running:
             # noinspection PyBroadException
