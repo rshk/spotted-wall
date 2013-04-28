@@ -7,7 +7,7 @@ import time
 
 import pygame
 
-from .utils import Colors, lazy_property, wrap_pygame_text, pygame_color_to_hex
+from ..utils import Colors, lazy_property, wrap_pygame_text, pygame_color_to_hex
 
 
 MESSAGE_MIN_SHOW_TIME = 10

@@ -2,18 +2,23 @@ from setuptools import setup, find_packages
 
 setup(
     name='spotted_wall',
-    version='0.1',
+    version=__import__('spotted_wall').__version__,
+    description='A display with scrolling messages on it, pygame-powered',
     packages=find_packages(),
     url='https://github.com/rshk/spotted-wall',
-    license='GPLv3+',
-    author='Samuele Santi',
-    author_email='samuele@samuelesanti.com',
-    description='',
+    license='Apache License, Version 2.0',
+    author='Samuele ~redShadow~ Santi',
+    author_email='redshadow@hackzine.org',
     install_requires=[
         'pygame',
-        'zerorpc',
-        'pyzmq<13',  # Version 13 is known not to work
-        'flask',
+        'smartrpyc',
     ],
     package_data={'': ['README.rst']},
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: X11 Applications',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.7',
+    ],
 )

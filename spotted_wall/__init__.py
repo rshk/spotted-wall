@@ -1,5 +1,5 @@
 """
-:author: samu
-:created: 3/4/13 8:34 PM
+Spotted Wall Main package
 """
 
+__version__ = '0.1'
