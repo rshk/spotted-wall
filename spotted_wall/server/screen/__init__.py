@@ -40,30 +40,37 @@ class SpottedWallScreen(object):
         ## Container for the messages
         self.messages = {}
 
-        pygame.init()
-
-        ## Clock, used to calculate FPS
-        self.clock = pygame.time.Clock()
-
-        self._window_res = initial_size
-        # the max resolution available..
-        self._fullscreen_res = max(pygame.display.list_modes())
-
-        self._set_video_mode(fullscreen=fullscreen)
-
-        pygame.display.set_caption("Spotted Wall (main window)")
-
-        # self.messages_font = pygame.font.Font('fonts/Vera.ttf', FONT_SIZE)
-        # self.messages_font = pygame.font.SysFont('sans-serif', FONT_SIZE)
-        self.messages_font = pygame.font.SysFont(
-            'monospace', messages_font_size)
-
-        self.show_fps = show_fps
-        self.message_id = Counter()
-        self.show_clock = True
+        ## threading.Lock() for access to the messages list
         self._msgs_access_lock = threading.Lock()
 
+        ## Counter yielding message ids. Just call .next() to get one.
+        self.message_id = Counter()
+
+        ## Initialize pygame
+        pygame.init()
+
+        ## The clock, used to calculate FPS etc.
+        self.clock = pygame.time.Clock()
+
+        ## Prepare screen resolution sizes
+        self._window_res = initial_size
+        self._fullscreen_res = max(pygame.display.list_modes())
+
+        ## Set the desired fullscreen mode
+        self._set_video_mode(fullscreen=fullscreen)
+
+        ## Set window title
+        pygame.display.set_caption("Spotted Wall (main window)")
+
+        ## Some extra configuration options
+        self._messages_font_size = messages_font_size
+        self.show_fps = show_fps
+        self.show_clock = True
+
     def list_screen_resolutions(self):
+        """
+        List the available video modes
+        """
         return pygame.display.list_modes()
 
     @property
@@ -83,7 +90,7 @@ class SpottedWallScreen(object):
 
         self._set_video_mode(self.size, self._fullscreen)
 
-        self.main_loop()
+        self._main_loop()
 
     def _set_video_mode(self, resolution=None, fullscreen=False):
         """
@@ -109,13 +116,8 @@ class SpottedWallScreen(object):
             self._window_res = resolution
         self.screen = pygame.display.set_mode(resolution, _screen_flags)
 
-    def _toggle_fullscreen(self):
+    def toggle_fullscreen(self):
         self._set_video_mode(fullscreen=not self._fullscreen)
-
-    # def _quit(self):
-    #     """Terminate application"""
-    #     print "Quitting..."
-    #     sys.exit()
 
     def _check_events(self):
         """Process all the new pygame events"""
@@ -127,7 +129,7 @@ class SpottedWallScreen(object):
 
             if event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_f, pygame.K_F11):
-                    self._toggle_fullscreen()
+                    self.toggle_fullscreen()
 
                 # elif event.key == pygame.K_q:
                 #     pass
@@ -197,10 +199,8 @@ class SpottedWallScreen(object):
                 bottom=self.height - 5, centerx=self.width/2)
             self.screen.blit(clock_label, rec)
 
-    def main_loop(self):
-        """
-        Application main loop
-        """
+    def _main_loop(self):
+        """Application main loop"""
         while 1:
             self._check_events()
             self._cleanup_messages()
@@ -214,6 +214,10 @@ class SpottedWallScreen(object):
     @lazy_property
     def service_font(self):
         return pygame.font.SysFont('monospace', 16)
+
+    @lazy_property
+    def messages_font(self):
+        return pygame.font.SysFont('monospace', self._messages_font_size)
 
     ##--------------------------------------------------------------------------
     ## Public interface
@@ -245,6 +249,7 @@ class SpottedWallScreen(object):
                 yield msg
 
     def get_message(self, message_id):
+        """Get the contents of a given message, by id"""
         with self._msgs_access_lock:
             message = self.messages[message_id]
             msg = message.to_dict()
@@ -252,7 +257,7 @@ class SpottedWallScreen(object):
         return msg
 
     def delete_message(self, message_id, immediate=False):
-        """Delete all the messages"""
+        """Delete or fade out a message"""
 
         with self._msgs_access_lock:
             if immediate:
@@ -261,12 +266,17 @@ class SpottedWallScreen(object):
                 self.messages[message_id].fadeOut()
 
     def hide_message(self, message_id):
-        """Delete all the messages"""
-        self.delete_message(False)
+        """Delete a specific message"""
+        self.delete_message(message_id, immediate=False)
 
     def edit_message(self, message_id, values):
         """Update the selected message"""
         self.messages[message_id].update(values)
+
+    def flush_messages(self):
+        """Empty the list of messages"""
+        with self._msgs_access_lock:
+            self.messages[:] = []
 
 
 class SpottedWallScreenThread(threading.Thread):
